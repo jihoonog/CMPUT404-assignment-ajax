@@ -42,8 +42,8 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
                 if (xhr.status==200) {
                     //XXX: parse some JSON from the request!
                     //XXX: Pass the data to the callback!
-                    jsonResponse = JSON.parse(xhr.response)
-                    callback(jsonResponse)
+                    jsonResponse = JSON.parse(xhr.response); 
+                    callback(jsonResponse);
                 }
             } 
             catch(e) {
@@ -55,42 +55,45 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
     // Open as a GET or whatever method is defined
     //XXX: set the mimetype and the accept headers!
     // Set the mimetype and accept headers
-    xhr.open(objects["method"] || 'GET', "http://" + host + url, false);
+    xhr.open("POST", url, true);
+    // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/overrideMimeType
     xhr.overrideMimeType("application/json");
-    xhr.setRequestHeader('Accept', "application/json");
+    // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader
+    xhr.setRequestHeader("Accept", "application/json");
     // Send the body to the url
-    xhr.send(json.stringify(objects));
+    xhr.send(JSON.stringify(objects));
 }
 
 
 world = {};
 
 //XXX: TODO Make this prettier!
-function drawLine(context,entity,prevEntity) {
+// https://library.superhi.com/posts/how-to-paint-with-code-creating-paintbrushes
+function drawCircle(context,entity,prevEntity) {
     with(context) {
         beginPath();              
         lineWidth = 3;
-        let x = entity["x"];
-        let y = entity["y"];
-        let px = prevEntity["x"];
-        let py = prevEntity["y"];
-        let xdiff = x - px;
-        let ydiff = y - py;
+        var x = entity["x"];
+        var y = entity["y"];
+        var px = prevEntity["x"];
+        var py = prevEntity["y"];
+        var xdiff = x - px;
+        var ydiff = y - py;
         // Get the magnitude of the two points
-        let mag = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
+        var mag = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
         // Generate a random color if specified
         if (entity["colour"] === "random") {
-            let randomColour = Math.floor(Math.random()*16777215).toString(16);
+            var randomColour = Math.floor(Math.random()*16777215).toString(16);
             entity["colour"] = "#" + randomColour;
         }
         fillStyle = entity["colour"];
-        globalAlpha = 0.3
+        globalAlpha = 0.3;
         // Set the radius based on speed faster the mouse movement the smaller the radius
         r = Math.max((75 - mag) / 3, 1);
         // moveTo(x,y);
         arc(x, y, r, 0, 2.0 * Math.PI, false);  
 
-        fill();                 
+        fill();  
     }
 }
 
@@ -117,7 +120,7 @@ function renderFrame() {
         var prevEntity = world[Object.keys(world)[0]]
         for (var key in world) {
             var entity = world[key];
-            drawLine(context,prepEntity(entity), prepEntity(prevEntity));
+            drawCircle(context,prepEntity(entity), prepEntity(prevEntity));
             prevEntity = entity;
         }
     }
@@ -163,7 +166,7 @@ function addEntity(entity, data) {
     world[entity] = data;
     drawNextFrame(); // (but should we?)
     //XXX: Send a XHTML Request that updates the entity you just modified!
-    sendJSONXMLHTTPRequest("/entity/"+entity, {"method": "POST","body": data}, result => {});
+    sendJSONXMLHTTPRequest("/entity/" + entity, data , result => {});
 }
 
 var counter = 0;
@@ -287,8 +290,7 @@ mouse.mousedraggers.push(function(x,y,clicked,e) {
 function update() {
     //XXX: TODO Get the world from the webservice using a XMLHTTPRequest
     drawFrame();
-    sendJSONXMLHTTPRequest("/world", null, result => {world=result});
-    drawFrame();
+    sendJSONXMLHTTPRequest("/world", null , result => {world=result;});
     drawNextFrame();
 }
 

@@ -22,7 +22,7 @@
 
 
 import flask
-from flask import Flask, request, redirect
+from flask import Flask, request, redirect, Response
 import json
 app = Flask(__name__)
 app.debug = True
@@ -74,7 +74,7 @@ def flask_post_json():
 @app.route("/")
 def hello():
     '''Return something coherent here.. perhaps redirect to /static/index.html '''
-    return redirect("./static/index.html")
+    return redirect("./static/index.html") # https://flask.palletsprojects.com/en/2.0.x/api/#flask.redirect
 
 @app.route("/entity/<entity>", methods=['POST','PUT'])
 def update(entity):
@@ -82,23 +82,23 @@ def update(entity):
     data = flask_post_json()
     for key, value in data.items():
         myWorld.update(entity, key, value)
-    return json.dumps(myWorld.get(entity))
+    return Response(json.dumps(data), status=200, mimetype="application/json")  # https://flask.palletsprojects.com/en/2.0.x/api/#response-objects
 
 @app.route("/world", methods=['POST','GET'])    
 def world():
     '''you should probably return the world here'''
-    return json.dumps(myWorld.world())
+    return Response(json.dumps(myWorld.world()), status=200, mimetype="application/json") # https://flask.palletsprojects.com/en/2.0.x/api/#response-objects
 
 @app.route("/entity/<entity>")    
 def get_entity(entity):
     '''This is the GET version of the entity interface, return a representation of the entity'''
-    return json.dumps(myWorld.get(entity))
+    return Response(json.dumps(myWorld.get(entity)), status=200, mimetype="application/json") # https://flask.palletsprojects.com/en/2.0.x/api/#response-objects
 
 @app.route("/clear", methods=['POST','GET'])
 def clear():
     '''Clear the world out!'''
     myWorld.clear()
-    return json.dumps(dict())
+    return Response(json.dumps(dict()), status=200, mimetype="application/json") # https://flask.palletsprojects.com/en/2.0.x/api/#response-objects
 
 if __name__ == "__main__":
     app.run()
