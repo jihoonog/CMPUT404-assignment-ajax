@@ -37,7 +37,7 @@
      get updates.
 
 ** Requirements
-
+   
    - [ ] Implement the AJAX Javascript parts in the HTML file static/index.htm
    - [ ] Implement the webservice root
    - [ ] Implement the webservice /entity/entity-name POST/PUT/GET API
@@ -55,6 +55,7 @@
    - [ ] PUT returns the object that was PUT. 
    - [ ] http://hostname:5000/static/index.html will work to produce the UI
          (so http://127.0.0.1:5000/static/index.html should work and http://localhost:5000/static/index.html should work)
+   - [ ] Doesn't abuse POST, doesn't poll /world with POST method.
 
  
 ** Restrictions
@@ -81,9 +82,22 @@
      
    - Marks will be deducted for using library code that does the assignment
 
+
 ** Marking
-   - 3 marks for passing all of the tests
-   - 1 mark for passing not-free-tests.py
-   - 2 marks for being usable in the browser
-   - 1 mark for looking better than what I gave you
-     
+   - Excellent 7/7: All tests pass (free and notfree), Meets
+     requirements. Looks SIGNIFICANTLY better than what I gave you.
+     Runs flawlessly in the browser (latency and synchronization).
+     Uses POST and GET appropriately. Doesn't POST to /world to retrieve world.
+   - Good 6/7: All tests pass (free and notfree), Meets
+     requirements. Looks better than what I gave you.
+     Runs flawlessly in the browser (latency and synchronization).
+     Uses POST and GET appropriately. Doesn't POST to /world to retrieve world.
+   - Satisfactory 5/7: All tests pass (free and notfree), meets most
+     requirements. Could look like what I gave or perhaps some minor
+     browser issues (latency and synchronization).
+     Maybe misuses POST or GET: uses POST to /world to retrieve world.
+   - Unsatisfactory 3/7: All tests pass (free and notfree). Clearly
+     limited effort. UI looks poor, browser issues such as latency and
+     synchronization.
+   - Failure 0/7: Any test fails. Browser doesn't work. No
+     synchronization in browser. Missing parts. Incomplete.
