@@ -57,7 +57,7 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
     // Set the mimetype and accept headers
     xhr.open("POST", url, true);
     // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/overrideMimeType
-    xhr.overrideMimeType("application/json");
+    xhr.setRequestHeader("Content-type", "application/json")
     // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader
     xhr.setRequestHeader("Accept", "application/json");
     // Send the body to the url
@@ -288,10 +288,34 @@ mouse.mousedraggers.push(function(x,y,clicked,e) {
 
 
 function update() {
-    //XXX: TODO Get the world from the webservice using a XMLHTTPRequest
     drawFrame();
-    sendJSONXMLHTTPRequest("/world", null , result => {world=result;});
-    drawNextFrame();
+    //XXX: TODO Get the world from the webservice using a XMLHTTPRequest
+    var xhr = new XMLHttpRequest();
+    // event handler for the readyState attribute
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState==4) {
+            try {
+                if (xhr.status==200) {
+                    //XXX: parse some JSON from the request!
+                    //XXX: Pass the data to the callback!
+                    world = JSON.parse(xhr.responseText); 
+                    drawNextFrame();
+                }
+            } 
+            catch(e) {
+                alert('Error: ' + e.name);
+            }
+        }
+    };
+    xhr.open("GET", "/world");
+    // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/overrideMimeType
+    // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader
+    // Send the body to the url
+    xhr.send()
+
+
+
+    // sendJSONXMLHTTPRequest("/world", null , result => {world=result;});
 }
 
 // 30 frames per second
